@@ -20,15 +20,13 @@ export const user = async (req, res) => {
             clientsIp = clientsIp.split(':').pop();
         }
 
-        // Log the IP address for debugging
-        console.log('Client IP:', clientsIp);
+       
 
         const geoResponse = await axios.get(`https://ipapi.co/${clientsIp}/json/`);
         if (geoResponse.data.error) throw new Error('Unable to geolocate IP address.');
 
         const { latitude, longitude, city, region, country_name } = geoResponse.data;
-        console.log('Geolocation data:', { latitude, longitude, city, region, country_name });
-
+       
         // Ensure you have the API key
         const weatherApiKey = process.env.WEATHER_APP_API_KEY;
         if (!weatherApiKey) throw new Error('Weather API key is not set.');
@@ -43,7 +41,7 @@ export const user = async (req, res) => {
         });
 
         const weatherData = weatherResponse.data;
-        console.log('Weather data:', weatherData);
+        
 
         return res.status(200).json({
             clientsIp,
