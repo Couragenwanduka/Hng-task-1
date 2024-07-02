@@ -9,20 +9,19 @@ export const user = async (req, res) => {
 
         // Retrieve client's IP address from req.headers or req.socket
         let clientsIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
-        
-        // Log the IP address for debugging
-        console.log('Client IP:', clientsIp);
 
-        // For testing purposes, use a static IP like '8.8.8.8'
-        // In production, use the real client IP
-        const testIP = clientsIp === '::1' ? '8.8.8.8' : clientsIp;
-
-        // Handle IPv6-mapped IPv4 addresses
-        if (testIP.includes('::ffff:')) {
-            clientsIp = testIP.split(':').pop();
+        // Handle multiple IP addresses in x-forwarded-for header
+        if (clientsIp.includes(',')) {
+            clientsIp = clientsIp.split(',')[0].trim();
         }
 
-        console.log('IP for geolocation:', clientsIp);
+        // Handle IPv6-mapped IPv4 addresses
+        if (clientsIp.includes('::ffff:')) {
+            clientsIp = clientsIp.split(':').pop();
+        }
+
+        // Log the IP address for debugging
+        console.log('Client IP:', clientsIp);
 
         const geoResponse = await axios.get(`https://ipapi.co/${clientsIp}/json/`);
         if (geoResponse.data.error) throw new Error('Unable to geolocate IP address.');
