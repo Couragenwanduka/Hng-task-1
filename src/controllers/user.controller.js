@@ -43,9 +43,8 @@ export const user = async (req, res) => {
         const weatherData = weatherResponse.data;
         
 
-        return res.status(200).json({
-            clientsIp,
-            visitorName: userName,
+       return res.status(200).json({
+            clients_sIp:clientsIp,
             location: {
                 city,
                 region,
@@ -53,9 +52,8 @@ export const user = async (req, res) => {
                 latitude,
                 longitude
             },
-            weather: {
-                temperature: weatherData.main.temp,
-                description: weatherData.weather[0].description
+            geetings: {
+                greetings: `Hello, ${userName}!, the temperature is ${weatherData.main.temp}, in ${city}`,
             }
         });
     } catch (error) {
